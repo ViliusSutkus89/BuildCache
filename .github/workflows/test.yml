@@ -117,6 +117,9 @@ jobs:
           disk-size: 8G
           script: echo "Generated AVD snapshot for caching."
 
+      - run: ls -lhaR ~/.android/adb* ~/.android/avd/*
+      - run: du -hs ~/.android/adb* ~/.android/avd/*
+
       - run: tar -cf adb-and-avd-cache.tar -C ~/ ~/.android/adb* ~/.android/avd/*
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
