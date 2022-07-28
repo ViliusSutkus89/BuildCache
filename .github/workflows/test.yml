@@ -131,3 +131,32 @@ jobs:
           arch: ${{ matrix.arch }}
           target: ${{ matrix.api-type-target }}
           script: time ./gradlew connectedCheck
+  unCachedTest:
+    # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
+    runs-on: macos-11
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86
+            api-level: 16
+            api-type-target: default
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: 11
+      - uses: android-actions/setup-android@v2
+
+      - name: Run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
+          api-level: ${{ matrix.api-level }}
+          arch: ${{ matrix.arch }}
+          target: ${{ matrix.api-type-target }}
+          script: time ./gradlew connectedCheck
+          sdcard-path-or-size: 1G
+          disk-size: 8G
