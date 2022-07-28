@@ -128,12 +128,13 @@ jobs:
       - run: ls -lhaR ~/.android/adb* ~/.android/avd/*
       - run: du -hs ~/.android/adb* ~/.android/avd/*
 
-      - run: tar -cf adb-and-avd-cache.tar -C ~/ ~/.android/adb* ~/.android/avd
+      - run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
+        working-directory: $HOME
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
       # DEBUG
-      - run: ls -lh adb-and-avd-cache.tar
-      - run: tar --list -f adb-and-avd-cache.tar
+      - run: ls -lh ~/adb-and-avd-cache.tar
+      - run: tar --list -f ~/adb-and-avd-cache.tar
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
 #      - uses: actions/download-artifact@v3
