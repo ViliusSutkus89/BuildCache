@@ -130,11 +130,9 @@ jobs:
         with:
           name: app-build.tar
 
-      - run: |
-          mkdir app/build
-          tar -xf app-build.tar -C app/build
+      - run: tar -xf app-build.tar
 
-      - run: ls -lhaR
+      - run: ls -lhR
 
       - name: Run tests
         uses: reactivecircus/android-emulator-runner@v2
