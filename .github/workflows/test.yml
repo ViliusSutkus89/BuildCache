@@ -132,7 +132,7 @@ jobs:
 #        working-directory: $HOME
 
       - run: pwd
-        working-directory: ~/
+        working-directory: ~
 
       - run: echo $HOME
       - run: |
