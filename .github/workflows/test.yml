@@ -122,7 +122,7 @@ jobs:
 
       - run: ls -lhaR ~/
 
-      - run: tar -cf adb-and-avd-cache.tar -C ~/ ~/.android/adb* ~/.android/avd/*
+      - run: tar -cf adb-and-avd-cache.tar -C ~/ .android/adb* .android/avd/*
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
 
