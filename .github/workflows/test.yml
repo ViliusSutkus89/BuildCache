@@ -131,19 +131,15 @@ jobs:
 #      - run: pwd
 #        working-directory: $HOME
 
-      - run: pwd
-        working-directory: ~
 
-      - run: echo $HOME
-      - run: |
-          cd $HOME
-          tar -cf adb-and-avd-cache.tar $HOME/.android/adb* .android/avd/*
+      - run: tar -cf adb-and-avd-cache.tar -C /Users/runner /Users/runner/.android/adb* /Users/runner/.android/avd/*
+
 #      - run: tar -C $HOME -cf adb-and-avd-cache.tar $HOME/.android/adb* $HOME/.android/avd/*
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
       # DEBUG
-      - run: ls -lh $HOME/adb-and-avd-cache.tar
-      - run: tar --list -f $HOME/adb-and-avd-cache.tar
+      - run: ls -lh adb-and-avd-cache.tar
+      - run: tar --list -f adb-and-avd-cache.tar
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
 #      - uses: actions/download-artifact@v3
