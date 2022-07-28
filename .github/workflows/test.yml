@@ -93,13 +93,16 @@ jobs:
         uses: actions/cache@v3
         id: adb-and-avd-cache
         with:
-          path: ~/adb-and-avd-cache.tar
+          path: adb-and-avd-cache.tar
           key: adb-and-avd-${{ matrix.arch }}-${{ matrix.api-level }}-${{ matrix.api-type-target }}-${{ secrets.CACHE_KEY_SUFFIX }}
+
+      # DEBUG
+      - run: tar --list -f adb-and-avd-cache.tar
+        if: steps.adb-and-avd-cache.cache-hit == 'true'
 
       - name: Extract AVD
         if: steps.adb-and-avd-cache.cache-hit == 'true'
-        run: tar -xf adb-and-avd-cache.tar
-        working-directory: $HOME
+        run: tar -xf adb-and-avd-cache.tar -C ~/
 
 #      - uses: android-actions/setup-android@v2
 
@@ -117,12 +120,11 @@ jobs:
 
       - name: tar AVD
         if: steps.adb-and-avd-cache.cache-hit != 'true'
-        run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
-        working-directory: $HOME
+        run: tar -cf adb-and-avd-cache.tar -C ~/ ~/.android/adb* ~/.android/avd/*
 
       # DEBUG
       - run: tar --list -f adb-and-avd-cache.tar
-        working-directory: $HOME
+        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
       - uses: actions/download-artifact@v3
         with:
@@ -142,6 +144,7 @@ jobs:
             time ./gradlew connectedCheck
 
   unCachedTest:
+    if: false
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
     runs-on: macos-11
     strategy:
