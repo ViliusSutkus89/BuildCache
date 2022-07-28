@@ -130,7 +130,9 @@ jobs:
         with:
           name: app-build.tar
 
-      - run: tar -xf app-build.tar -C app/build
+      - run: |
+        mkdir app/build
+        tar -xf app-build.tar -C app/build
 
       - run: ls -lhaR
 
