@@ -92,11 +92,6 @@ jobs:
           path: ~/.android
       - run: ls -lhaR ~/.android
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: app-build
-          path: app/build
-
       - name: Android Virtual Device (AVD) cache
         uses: actions/cache@v3
         id: adb-and-avd-cache
@@ -109,7 +104,7 @@ jobs:
       - uses: android-actions/setup-android@v2
 
       - name: Create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
+        if: steps.adb-and-avd-cache.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
@@ -119,6 +114,11 @@ jobs:
           sdcard-path-or-size: 1G
           disk-size: 8G
           script: echo "Generated AVD snapshot for caching."
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: app-build
+          path: app/build
 
       - run: ls -lhaR
 
