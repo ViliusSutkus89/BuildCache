@@ -129,7 +129,7 @@ jobs:
       - run: du -hs ~/.android/adb* ~/.android/avd/*
 
       - run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
-        working-directory: $HOME
+        working-directory: ~/
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
       # DEBUG
