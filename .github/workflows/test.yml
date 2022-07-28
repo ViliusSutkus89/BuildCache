@@ -65,6 +65,12 @@ jobs:
           name: app-build
           path: app/build
 
+      - run: tar -cf app-build.tar app/build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: app-build.tar
+          path: app-build.tar
+
       - run: ls -lhaR
       - run: ls -lhaR ~/.android
 
@@ -118,7 +124,13 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: app-build
-          path: app/build
+          path: app/build-untarred
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: app-build.tar
+
+      - run: tar -f app-build.tar -C app/build
 
       - run: ls -lhaR
 
