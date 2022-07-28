@@ -60,19 +60,11 @@ jobs:
           name: debug-keystore
           path: ~/.android/debug.keystore
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: app-build
-          path: app/build
-
       - run: tar -cf app-build.tar app/build
       - uses: actions/upload-artifact@v3
         with:
           name: app-build.tar
           path: app-build.tar
-
-      - run: ls -lhaR
-      - run: ls -lhaR ~/.android
 
   test:
     needs: build
@@ -96,7 +88,6 @@ jobs:
         with:
           name: debug-keystore
           path: ~/.android
-      - run: ls -lhaR ~/.android
 
       - name: Android Virtual Device (AVD) cache
         uses: actions/cache@v3
@@ -123,16 +114,8 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: app-build
-          path: app/build-untarred
-
-      - uses: actions/download-artifact@v3
-        with:
           name: app-build.tar
-
       - run: tar -xf app-build.tar
-
-      - run: ls -lhR
 
       - name: Run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -143,6 +126,7 @@ jobs:
           arch: ${{ matrix.arch }}
           target: ${{ matrix.api-type-target }}
           script: time ./gradlew connectedCheck
+
   unCachedTest:
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
     runs-on: macos-11
