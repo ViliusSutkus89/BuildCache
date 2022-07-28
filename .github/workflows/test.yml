@@ -131,8 +131,8 @@ jobs:
           name: app-build.tar
 
       - run: |
-        mkdir app/build
-        tar -xf app-build.tar -C app/build
+          mkdir app/build
+          tar -xf app-build.tar -C app/build
 
       - run: ls -lhaR
 
