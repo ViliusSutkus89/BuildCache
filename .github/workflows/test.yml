@@ -37,6 +37,7 @@ permissions:
 
 jobs:
   build:
+    if: false
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v3
@@ -67,7 +68,7 @@ jobs:
           path: app-build.tar
 
   test:
-    needs: build
+#    needs: build
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
     runs-on: macos-11
     strategy:
@@ -84,30 +85,28 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: debug-keystore
-          path: ~/.android
+#      - uses: actions/download-artifact@v3
+#        with:
+#          name: debug-keystore
+#          path: ~/.android
 
-      - name: Cache AVD (Android Virtual Device)
-        uses: actions/cache@v3
-        id: adb-and-avd-cache
-        with:
-          path: adb-and-avd-cache.tar
-          key: adb-and-avd-${{ matrix.arch }}-${{ matrix.api-level }}-${{ matrix.api-type-target }}-${{ secrets.CACHE_KEY_SUFFIX }}
-
-      # DEBUG
-      - run: tar --list -f adb-and-avd-cache.tar
-        if: steps.adb-and-avd-cache.cache-hit == 'true'
-
-      - name: Extract AVD
-        if: steps.adb-and-avd-cache.cache-hit == 'true'
-        run: tar -xf adb-and-avd-cache.tar -C ~/
-
-#      - uses: android-actions/setup-android@v2
+#      - name: Cache AVD (Android Virtual Device)
+#        uses: actions/cache@v3
+#        id: adb-and-avd-cache
+#        with:
+#          path: adb-and-avd-cache.tar
+#          key: adb-and-avd-${{ matrix.arch }}-${{ matrix.api-level }}-${{ matrix.api-type-target }}-${{ secrets.CACHE_KEY_SUFFIX }}
+#
+#      # DEBUG
+#      - run: tar --list -f adb-and-avd-cache.tar
+#        if: steps.adb-and-avd-cache.cache-hit == 'true'
+#
+#      - name: Extract AVD
+#        if: steps.adb-and-avd-cache.cache-hit == 'true'
+#        run: tar -xf adb-and-avd-cache.tar -C ~/
 
       - name: Create AVD and generate snapshot
-        if: steps.adb-and-avd-cache.cache-hit != 'true'
+#        if: steps.adb-and-avd-cache.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
@@ -118,30 +117,30 @@ jobs:
           disk-size: 8G
           script: echo "Generated AVD snapshot for caching."
 
-      - name: tar AVD
-        if: steps.adb-and-avd-cache.cache-hit != 'true'
-        run: tar -cf adb-and-avd-cache.tar -C ~/ ~/.android/adb* ~/.android/avd/*
+      - run: tar -cf adb-and-avd-cache.tar -C ~/ ~/.android/adb* ~/.android/avd/*
+#        if: steps.adb-and-avd-cache.cache-hit != 'true'
+
 
       # DEBUG
       - run: tar --list -f adb-and-avd-cache.tar
-        if: steps.adb-and-avd-cache.cache-hit != 'true'
+#        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: app-build.tar
-      - run: tar -xf app-build.tar
-
-      - name: Run tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
-          api-level: ${{ matrix.api-level }}
-          arch: ${{ matrix.arch }}
-          target: ${{ matrix.api-type-target }}
-          script: |
-            adb uninstall com.viliussutkus89.buildcache || echo "Didn't need to uninstall"
-            time ./gradlew connectedCheck
+#      - uses: actions/download-artifact@v3
+#        with:
+#          name: app-build.tar
+#      - run: tar -xf app-build.tar
+#
+#      - name: Run tests
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          force-avd-creation: false
+#          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
+#          api-level: ${{ matrix.api-level }}
+#          arch: ${{ matrix.arch }}
+#          target: ${{ matrix.api-type-target }}
+#          script: |
+#            adb uninstall com.viliussutkus89.buildcache || echo "Didn't need to uninstall"
+#            time ./gradlew connectedCheck
 
   unCachedTest:
     if: false
