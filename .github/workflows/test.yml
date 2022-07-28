@@ -103,7 +103,7 @@ jobs:
 
       - name: Create AVD and generate snapshot
         uses: reactivecircus/android-emulator-runner@v2
-        if: ${{ ! steps.adb-and-avd-cache.outputs.cache-hit }}
+        if: ! steps.adb-and-avd-cache.outputs.cache-hit
         with:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           api-level: 16
@@ -118,7 +118,7 @@ jobs:
 
       - run: tar -v -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
         working-directory: /Users/runner
-        if: ${{ ! steps.adb-and-avd-cache.outputs.cache-hit }}
+        if: ! steps.adb-and-avd-cache.outputs.cache-hit
 
       - run: ls -lh /Users/runner/adb-and-avd-cache.tar
 
