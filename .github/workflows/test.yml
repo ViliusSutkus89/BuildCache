@@ -125,7 +125,9 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: ${{ matrix.arch }}
           target: ${{ matrix.api-type-target }}
-          script: time ./gradlew connectedCheck
+          script: |
+            adb shell cmd package list packages -f
+            time ./gradlew connectedCheck
 
   unCachedTest:
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
