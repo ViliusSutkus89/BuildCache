@@ -53,7 +53,7 @@ jobs:
 
       - uses: android-actions/setup-android@v2
 
-      - run: ./gradlew build
+      - run: ./gradlew assembleDebug
 
       - uses: actions/upload-artifact@v3
         with:
@@ -89,18 +89,21 @@ jobs:
           name: debug-keystore
           path: ~/.android
 
-      - name: Android Virtual Device (AVD) cache
+      - name: Cache AVD (Android Virtual Device)
         uses: actions/cache@v3
         id: adb-and-avd-cache
         with:
-          path: |
-            ~/.android/adb*:
-            ~/.android/avd/*
+          path: ~/adb-and-avd-cache.tar
           key: adb-and-avd-${{ matrix.arch }}-${{ matrix.api-level }}-${{ matrix.api-type-target }}-${{ secrets.CACHE_KEY_SUFFIX }}
+
+      - name: Extract AVD
+        if: steps.adb-and-avd-cache.cache-hit == 'true'
+        run: tar -xf adb-and-avd-cache.tar
+        working-directory: ~/
 
       - uses: android-actions/setup-android@v2
 
-      - name: Create AVD and generate snapshot for caching
+      - name: Create AVD and generate snapshot
         if: steps.adb-and-avd-cache.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -111,6 +114,14 @@ jobs:
           sdcard-path-or-size: 1G
           disk-size: 8G
           script: echo "Generated AVD snapshot for caching."
+
+      - name: tar AVD
+        if: steps.adb-and-avd-cache.cache-hit != 'true'
+        run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
+        working-directory: ~/
+
+      # DEBUG
+      - run: tar --list -f adb-and-avd-cache.tar
 
       - uses: actions/download-artifact@v3
         with:
@@ -126,7 +137,7 @@ jobs:
           arch: ${{ matrix.arch }}
           target: ${{ matrix.api-type-target }}
           script: |
-            adb shell cmd package list packages -f
+            adb uninstall com.viliussutkus89.buildcache || echo "Didn't need to uninstall"
             time ./gradlew connectedCheck
 
   unCachedTest:
