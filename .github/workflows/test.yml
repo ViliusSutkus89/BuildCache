@@ -128,6 +128,12 @@ jobs:
       - run: ls -lhaR ~/.android/adb* ~/.android/avd/*
       - run: du -hs ~/.android/adb* ~/.android/avd/*
 
+      - run: pwd
+        working-directory: $HOME
+
+      - run: pwd
+        working-directory: ~/
+
       - run: echo $HOME
       - run: |
           cd $HOME
