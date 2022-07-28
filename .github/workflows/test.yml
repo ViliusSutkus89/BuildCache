@@ -51,7 +51,7 @@ jobs:
           path: ~/.android/debug.keystore
           key: debug-keystore-${{ secrets.CACHE_KEY_SUFFIX }}
 
-      - uses: android-actions/setup-android@v2
+#      - uses: android-actions/setup-android@v2
 
       - run: ./gradlew assembleDebug
 
@@ -101,7 +101,7 @@ jobs:
         run: tar -xf adb-and-avd-cache.tar
         working-directory: $HOME
 
-      - uses: android-actions/setup-android@v2
+#      - uses: android-actions/setup-android@v2
 
       - name: Create AVD and generate snapshot
         if: steps.adb-and-avd-cache.cache-hit != 'true'
@@ -157,7 +157,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v2
+#      - uses: android-actions/setup-android@v2
 
       - name: Run tests
         uses: reactivecircus/android-emulator-runner@v2
