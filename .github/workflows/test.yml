@@ -94,10 +94,10 @@ jobs:
         uses: actions/cache@v3
         id: adb-and-avd-cache
         with:
-          path: /Users/runner/adb-and-avd-cache.tar
-          key: adb-and-avd-${{ matrix.arch }}-${{ matrix.api-level }}-${{ matrix.api-type-target }}-${{ secrets.CACHE_KEY_SUFFIX }}
+          path: /Users/runner/adb-and-avd-cache.tar.gz
+          key: adb2-and-avd-${{ matrix.arch }}-${{ matrix.api-level }}-${{ matrix.api-type-target }}-${{ secrets.CACHE_KEY_SUFFIX }}
 
-      - run: tar -v -xf adb-and-avd-cache.tar
+      - run: tar -v -xf adb-and-avd-cache.tar.gz
         if: steps.adb-and-avd-cache.outputs.cache-hit
         working-directory: /Users/runner
 
@@ -116,11 +116,11 @@ jobs:
           disk-size: 8G
           script: echo "Generated AVD snapshot for caching."
 
-      - run: tar -v -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
+      - run: tar -v -cf adb-and-avd-cache.tar.gz .android/adb* .android/avd/*
         working-directory: /Users/runner
         if: ${{ ! steps.adb-and-avd-cache.outputs.cache-hit }}
 
-      - run: ls -lh /Users/runner/adb-and-avd-cache.tar
+      - run: ls -lh /Users/runner/adb-and-avd-cache.tar.gz
 
 #      - uses: actions/download-artifact@v3
 #        with:
