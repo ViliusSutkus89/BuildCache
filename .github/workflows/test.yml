@@ -137,7 +137,7 @@ jobs:
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
       - run: rm -r ~/.android
-      - run: tar -xf adb-and-avd-cache.tar
+      - run: tar -xf adb-and-avd-cache.tar -v
         working-directory: /Users/runner
 
       - run: ls -lhaR ~/.android/adb* ~/.android/avd/*
