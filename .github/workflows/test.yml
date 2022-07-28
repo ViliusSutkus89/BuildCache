@@ -105,7 +105,12 @@ jobs:
 #        if: steps.adb-and-avd-cache.cache-hit == 'true'
 #        run: tar -xf adb-and-avd-cache.tar -C ~/
 
+      - run: mkdir -p ~/.android/avd
+      - run: touch ~/.android/avd/test.avd
+      - run: touch ~/.android/adbkey
+
       - name: Create AVD and generate snapshot
+        if: false
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -126,8 +131,8 @@ jobs:
       - run: tar -cf adb-and-avd-cache.tar -C ~/ .android/adb* .android/avd/*
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
-
       # DEBUG
+      - run: ls -lh adb-and-avd-cache.tar
       - run: tar --list -f adb-and-avd-cache.tar
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
