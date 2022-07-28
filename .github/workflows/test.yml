@@ -58,8 +58,11 @@ jobs:
 #          name: debug-keystore
 #          path: ~/.android/debug.keystore
 
-      - run: tar -cf app-build.tar app/build
-      - uses: actions/upload-artifact@v3
+      - name: prepare app/build
+        run: tar -cf app-build.tar app/build
+
+      - name: artifact app/build
+        uses: actions/upload-artifact@v3
         with:
           name: app-build.tar
           path: app-build.tar
@@ -68,13 +71,25 @@ jobs:
     needs: build
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
     runs-on: macos-11
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - arch: x86
-#            api-level: 16
-#            api-type-target: default
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Oldest provisionally supported API
+          - arch: x86
+            api-level: 16
+            api-type-target: default
+          # Oldest properly supported API
+          - arch: x86
+            api-level: 19
+            api-type-target: default
+          - arch: x86_64
+            api-level: 28
+            api-type-target: default
+          # Latest image
+          - arch: x86_64
+            api-level: 33
+            api-type-target: google_apis
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -87,39 +102,41 @@ jobs:
 #          name: debug-keystore
 #          path: ~/.android
 
-      - name: Cache AVD (Android Virtual Device)
+      - name: AVD (Android Virtual Device) Cache
         uses: actions/cache@v3
-        id: adb-and-avd-cache
+        id: avd-cache
         with:
-          path: /Users/runner/adb-and-avd-cache.tar
-          key: adb--and-avd-${{ matrix.arch }}-${{ matrix.api-level }}-${{ matrix.api-type-target }}-${{ secrets.CACHE_KEY_SUFFIX }}
+          path: /Users/runner/avd-cache.tar
+          key: avd-${{ matrix.arch }}-${{ matrix.api-level }}-${{ matrix.api-type-target }}-${{ secrets.CACHE_KEY_SUFFIX }}
 
-      - run: tar -v -xf adb-and-avd-cache.tar
-        if: steps.adb-and-avd-cache.outputs.cache-hit
+      - run: tar -v -xf avd-cache.tar
+        if: steps.avd-cache.outputs.cache-hit
         working-directory: /Users/runner
 
       - name: Create AVD and generate snapshot
         uses: reactivecircus/android-emulator-runner@v2
-        if: ${{ ! steps.adb-and-avd-cache.outputs.cache-hit }}
+        if: ${{ ! steps.avd-cache.outputs.cache-hit }}
         with:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          api-level: 16
-          arch: x86
-          target: default
-#          api-level: ${{ matrix.api-level }}
-#          arch: ${{ matrix.arch }}
-#          target: ${{ matrix.api-type-target }}
+#          api-level: 16
+#          arch: x86
+#          target: default
+          api-level: ${{ matrix.api-level }}
+          arch: ${{ matrix.arch }}
+          target: ${{ matrix.api-type-target }}
           sdcard-path-or-size: 1G
           disk-size: 8G
           script: echo "Generated AVD snapshot for caching."
 
-      - run: tar -v -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
+      - run: tar -v -cf avd-cache.tar .android/adb* .android/avd/*
         working-directory: /Users/runner
-        if: ${{ ! steps.adb-and-avd-cache.outputs.cache-hit }}
+        if: ${{ ! steps.avd-cache.outputs.cache-hit }}
 
-      - run: ls -lh /Users/runner/adb-and-avd-cache.tar
+      # @TODO:
+      - run: ls -lh /Users/runner/avd-cache.tar
 
-      - uses: actions/download-artifact@v3
+      - name: Download app/build artifact
+        uses: actions/download-artifact@v3
         with:
           name: app-build.tar
       - run: tar -xf app-build.tar
@@ -129,15 +146,13 @@ jobs:
         with:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
-          api-level: 16
-          arch: x86
-          target: default
-          #          api-level: ${{ matrix.api-level }}
-          #          arch: ${{ matrix.arch }}
-          #          target: ${{ matrix.api-type-target }}
-          script: |
-            adb uninstall com.viliussutkus89.buildcache || echo "Didn't need to uninstall"
-            time ./gradlew connectedCheck
+#          api-level: 16
+#          arch: x86
+#          target: default
+          api-level: ${{ matrix.api-level }}
+          arch: ${{ matrix.arch }}
+          target: ${{ matrix.api-type-target }}
+          script: time ./gradlew connectedCheck
 
 #  unCachedTest:
 #    if: false
