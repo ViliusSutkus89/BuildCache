@@ -128,9 +128,7 @@ jobs:
       - run: ls -lhaR ~/.android/adb* ~/.android/avd/*
       - run: du -hs ~/.android/adb* ~/.android/avd/*
 
-      - run: env
-      - run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
-        working-directory: ~/
+      - run: tar -cf adb-and-avd-cache.tar -C $HOME $HOME/.android/adb* $HOME/.android/avd/*
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
       # DEBUG
