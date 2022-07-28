@@ -70,6 +70,7 @@ jobs:
           path: app/build
 
       - run: ls -lhaR
+      - run: ls -lhaR ~/.android
 
   test:
     needs: build
@@ -93,6 +94,7 @@ jobs:
         with:
           name: adb-and-debug-keystore
           path: ~/.android
+      - run: ls -lhaR ~/.android
 
       - uses: actions/download-artifact@v3
         with:
@@ -127,4 +129,7 @@ jobs:
         with:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
+          api-level: ${{ matrix.api-level }}
+          arch: ${{ matrix.arch }}
+          target: ${{ matrix.api-type-target }}
           script: time ./gradlew connectedCheck
