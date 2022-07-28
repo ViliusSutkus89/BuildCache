@@ -128,28 +128,20 @@ jobs:
       - run: ls -lhaR ~/.android/adb* ~/.android/avd/*
       - run: du -hs ~/.android/adb* ~/.android/avd/*
 
-#      - run: pwd
-#        working-directory: $HOME
-
-
-#      - run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/* -C /Users/runner
-#      - run: tar -cf adb-and-avd-cache.tar .android/avd
-#        working-directory: /Users/runner
-
-      - run: tar -cf adb-and-avd-cache.tar /Users/runner/.android/avd -C /Users/runner
-#        working-directory: /Users/runner
-        
-
-#      - run: tar -C $HOME -cf adb-and-avd-cache.tar $HOME/.android/adb* $HOME/.android/avd/*
-#        if: steps.adb-and-avd-cache.cache-hit != 'true'
+      - run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
+        working-directory: /Users/runner
 
       # DEBUG
       - run: ls -lh /Users/runner/adb-and-avd-cache.tar
       - run: tar --list -f /Users/runner/adb-and-avd-cache.tar
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
-      - run: tar --help
-      - run: tar --version
+      - run: rm -r ~/.android
+      - run: tar -xf adb-and-avd-cache.tar
+        working-directory: /Users/runner
+
+      - run: ls -lhaR ~/.android/adb* ~/.android/avd/*
+      - run: du -hs ~/.android/adb* ~/.android/avd/*
 
 #      - uses: actions/download-artifact@v3
 #        with:
