@@ -79,11 +79,11 @@ jobs:
 #            api-level: 16
 #            api-type-target: default
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: temurin
+#          java-version: 17
 
 #      - uses: actions/download-artifact@v3
 #        with:
