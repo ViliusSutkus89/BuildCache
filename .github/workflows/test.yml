@@ -120,6 +120,8 @@ jobs:
         working-directory: /Users/runner
         if: steps.adb-and-avd-cache.cache-hit != 'true'
 
+      - run: ls -lh /Users/runner/adb-and-avd-cache.tar
+
 #      - uses: actions/download-artifact@v3
 #        with:
 #          name: app-build.tar
