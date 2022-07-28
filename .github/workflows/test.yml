@@ -99,7 +99,7 @@ jobs:
       - name: Extract AVD
         if: steps.adb-and-avd-cache.cache-hit == 'true'
         run: tar -xf adb-and-avd-cache.tar
-        working-directory: ~/
+        working-directory: $HOME
 
       - uses: android-actions/setup-android@v2
 
@@ -118,10 +118,11 @@ jobs:
       - name: tar AVD
         if: steps.adb-and-avd-cache.cache-hit != 'true'
         run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/*
-        working-directory: ~/
+        working-directory: $HOME
 
       # DEBUG
       - run: tar --list -f adb-and-avd-cache.tar
+        working-directory: $HOME
 
       - uses: actions/download-artifact@v3
         with:
