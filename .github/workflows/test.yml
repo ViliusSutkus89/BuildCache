@@ -133,13 +133,14 @@ jobs:
 
 
 #      - run: tar -cf adb-and-avd-cache.tar .android/adb* .android/avd/* -C /Users/runner
-      - run: tar -cf adb-and-avd-cache.tar .android/avd -C /Users/runner
+      - run: tar -cf adb-and-avd-cache.tar .android/avd
+        working-directory: /Users/runner
 #      - run: tar -C $HOME -cf adb-and-avd-cache.tar $HOME/.android/adb* $HOME/.android/avd/*
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
       # DEBUG
-      - run: ls -lh adb-and-avd-cache.tar
-      - run: tar --list -f adb-and-avd-cache.tar
+      - run: ls -lh /Users/runner/adb-and-avd-cache.tar
+      - run: tar --list -f /Users/runner/adb-and-avd-cache.tar
 #        if: steps.adb-and-avd-cache.cache-hit != 'true'
 
       - run: tar --help
