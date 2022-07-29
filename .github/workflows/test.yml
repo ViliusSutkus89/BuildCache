@@ -39,35 +39,39 @@ jobs:
   build:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
+      - run: pip install adbPullAs
+      - run: adbPullAs --version
 
-#      - name: Cache debug keystore
-#        uses: actions/cache@v3
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-java@v3
 #        with:
-#          path: ~/.android/debug.keystore
-#          key: debug-keystore-${{ secrets.CACHE_KEY_SUFFIX }}
-
-      - run: ./gradlew assembleDebug
-
-#      - uses: actions/upload-artifact@v3
+#          distribution: temurin
+#          java-version: 17
+#
+##      - name: Cache debug keystore
+##        uses: actions/cache@v3
+##        with:
+##          path: ~/.android/debug.keystore
+##          key: debug-keystore-${{ secrets.CACHE_KEY_SUFFIX }}
+#
+#      - run: ./gradlew assembleDebug
+#
+##      - uses: actions/upload-artifact@v3
+##        with:
+##          name: debug-keystore
+##          path: ~/.android/debug.keystore
+#
+#      - name: prepare app/build
+#        run: tar -cf app-build.tar app/build
+#
+#      - name: artifact app/build
+#        uses: actions/upload-artifact@v3
 #        with:
-#          name: debug-keystore
-#          path: ~/.android/debug.keystore
-
-      - name: prepare app/build
-        run: tar -cf app-build.tar app/build
-
-      - name: artifact app/build
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-build.tar
-          path: app-build.tar
+#          name: app-build.tar
+#          path: app-build.tar
 
   test:
+    if: false
     needs: build
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
     runs-on: macos-11
@@ -118,9 +122,6 @@ jobs:
         if: ${{ ! steps.avd-cache.outputs.cache-hit }}
         with:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-#          api-level: 16
-#          arch: x86
-#          target: default
           api-level: ${{ matrix.api-level }}
           arch: ${{ matrix.arch }}
           target: ${{ matrix.api-type-target }}
