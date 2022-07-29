@@ -40,6 +40,7 @@ jobs:
     runs-on: macos-11
     steps:
       - run: pip --version
+      - run: pip3 --version
       - run: pip3 install adbPullAs
       - run: adbPullAs --version
 
