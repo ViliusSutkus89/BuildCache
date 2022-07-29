@@ -39,7 +39,8 @@ jobs:
   build:
     runs-on: macos-11
     steps:
-      - run: pip install adbPullAs
+      - run: pip --version
+      - run: pip3 install adbPullAs
       - run: adbPullAs --version
 
 #      - uses: actions/checkout@v3
